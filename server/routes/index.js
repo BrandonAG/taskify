@@ -25,7 +25,7 @@ router.use('/api', apiRoutes);
 
 router.post('/login', async (req, res) => {
     // authenticate user
-    const result = JSON.parse(await authenticate(JSON.stringify(req.body)));
+    const result = await authenticate(JSON.stringify(req.body));
 
     if (result.response) {
         req.session.user = req.body.username;
@@ -33,10 +33,8 @@ router.post('/login', async (req, res) => {
 
         req.session.save(function (err) {
             if (err) return next(err);
-            console.log('save');
             // res.redirect('/');
             res.json({ message: "Success" });
-            console.log('redir');
         });
     } else {
         res.json({ message: "Fail" });

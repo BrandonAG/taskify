@@ -24,7 +24,7 @@ CREATE TABLE permission (
 DROP TABLE IF EXISTS user;
 CREATE TABLE user (
     id int AUTO_INCREMENT UNIQUE,
-    user_name varchar(255) NOT NULL,
+    user_name varchar(255) NOT NULL UNIQUE,
     user_password varchar(255) NOT NULL,
     PRIMARY KEY (id)
 );
@@ -32,7 +32,7 @@ CREATE TABLE user (
 DROP TABLE IF EXISTS project;
 CREATE TABLE project (
     id int AUTO_INCREMENT UNIQUE,
-    project_name varchar(255) NOT NULL,
+    project_name varchar(255) NOT NULL UNIQUE,
     PRIMARY KEY (id)
 );
 

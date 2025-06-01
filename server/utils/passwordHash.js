@@ -1,15 +1,15 @@
 require('dotenv').config();
 const http = require('http');
 
-const authenticate = (reqBody) => {
+const passwordHash = (reqBody) => {
     // wait for http response
     return new Promise((resolve) => {
         // send http POST request
         let data;
         const req = http.request({
-            host: process.env.AUTH_URL || 'localhost',
-            port: process.env.AUTH_PORT || 3001,
-            path: '/login',
+            host: process.env.HASH_URL || 'localhost',
+            port: process.env.HASH_PORT || 3001,
+            path: '/hash',
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
@@ -36,4 +36,4 @@ const authenticate = (reqBody) => {
     });
 }
 
-module.exports = authenticate;
+module.exports = passwordHash;

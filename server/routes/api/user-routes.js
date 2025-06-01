@@ -1,19 +1,30 @@
 const router = require('express').Router();
 const connection = require('../../config/connection');
+const passwordHash = require('../../utils/passwordHash');
 
 router.post('/', async (req, res) => {
   // create new user
-  req.session.user = req.body.username;
-  console.log(req.body.username);
-  if(req.session.user) {
+
+  // hash password
+  const result = await passwordHash(JSON.stringify({ plaintext_password: req.body.password}));
+
+  console.log(result);
+  if(req.body.username) {
+    console.log("TRY");
       try {
         const [rows] = await connection.query(
           `INSERT INTO user (user_name, user_password)
           VALUES (
-            ${req.body.username}, ${req.body.password}
+            '${req.body.username}', '${result.hashed_password}'
           );`);
-
-        res.status(200).json(rows);
+        
+        req.session.user = req.body.username;
+        req.session.save(function (err) {
+            if (err) return next(err);
+            console.log(req.session);
+            // res.redirect('/');
+            res.status(200).json({ message: "Success" });
+        });
       } catch (error) {
         console.error("Error executing queries:", error);
         res.status(500).send("An error occurred while executing the database queries.");
