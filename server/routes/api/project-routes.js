@@ -1,72 +1,72 @@
 const router = require('express').Router();
-const { Project, UserProject, Task } = require('../../models');
+const connection = require('../../config/connection');
 
-// The `/api/categories` endpoint
-
-router.get('/', (req, res) => {
+router.get('/', async (req, res) => {
 
     if(req.session.user) {
-        // find all categories
-        // be sure to include its associated Products
-        UserProject.sequelize.query(
-            `SELECT * FROM user_project INNER JOIN project ON user_project.project_id = project.id WHERE user_project.user_id = (SELECT user.id FROM user WHERE user.user_name = '${req.session.user}');`,
-            {
-                model: UserProject,
-                mapToModel: true
-            }
-        )
-        .then(dbPostData => res.json(dbPostData))
-        .catch(err => {
-            console.log(err);
-            res.status(500).json(err);
-        });
+        // find all user projects
+        try {
+          const [rows] = await connection.query(
+            `SELECT * FROM user_project
+            INNER JOIN project ON user_project.project_id = project.id
+            WHERE user_project.user_id = (SELECT user.id FROM user WHERE user.user_name = '${req.session.user}');`);
+
+          res.status(200).json(rows);
+        } catch (error) {
+          console.error("Error executing queries:", error);
+          res.status(500).send("An error occurred while executing the database queries.");
+        }
     } else {
         console.log('No user');
         res.send(null);
     }
 });
 
-router.get('/:id', (req, res) => {
-  // find one category by its `id` value
-  // be sure to include its associated Products
-  Task.sequelize.query(
-    `SELECT * FROM task
-    INNER JOIN user ON task.assigned_to_id = user.id
-    INNER JOIN priority ON task.priority_id = priority.id
-    INNER JOIN status ON task.status_id = status.id
-    WHERE task.id = ${req.params.id};`,
-    {
-        model: UserProject,
-        mapToModel: true
+router.get('/:id', async (req, res) => {
+    // find all tasks for project by project `id`
+    if(req.session.user) {
+        try {
+          const [rows] = await connection.query(
+            `SELECT * FROM task
+            INNER JOIN user ON task.assigned_to_id = user.id
+            INNER JOIN priority ON task.priority_id = priority.id
+            INNER JOIN status ON task.status_id = status.id
+            WHERE task.id = ${req.params.id};`);
+
+          res.status(200).json(rows);
+        } catch (error) {
+          console.error("Error executing queries:", error);
+          res.status(500).send("An error occurred while executing the database queries.");
+        }
+    } else {
+        console.log('No user');
+        res.send(null);
     }
-  )
-    .then(dbPostData => {
-      if (!dbPostData) {
-        res.status(404).json({ message: 'No post found with this id' });
-        return;
-      }
-      res.json(dbPostData);
-    })
-    .catch(err => {
-      console.log(err);
-      res.status(500).json(err);
-    });
 });
 
-router.post('/', (req, res) => {
+router.post('/', async (req, res) => {
   if(req.session.user) {
       console.log(req.session.user);
-      // find all categories
-      // be sure to include its associated Products
-      Project.create({ project_name: req.body.project_name })
-      .then(dbPostData => {
-        UserProject.sequelize.query(`INSERT INTO user_project ( user_id, project_id ) VALUES ( (SELECT id FROM user WHERE user_name = '${req.session.user}' ), ${dbPostData.id} );`)
-        res.json(dbPostData);
-      })
-      .catch(err => {
-          console.log(err);
-          res.status(500).json(err);
-      });
+      // Create new project
+      try {
+        const [rows] = await connection.query(
+          `INSERT INTO project ( project_name )
+          VALUES ( '${req.body.project_name}' );`);
+                
+        try {
+          const [data] = await connection.query(
+            `INSERT INTO user_project ( user_id, project_id, permission_id )
+            VALUES ( (SELECT id FROM user WHERE user_name = '${req.session.user}' ), ${rows.insertId}, 3 );`);
+
+          res.status(200).json(rows);
+        } catch (error) {
+          console.error("Error executing queries:", error);
+          res.status(500).send("An error occurred while executing the database queries.");
+        }
+      } catch (error) {
+        console.error("Error executing queries:", error);
+        res.status(500).send("An error occurred while executing the database queries.");
+      }
   } else {
       console.log('No user');
       res.send(null);

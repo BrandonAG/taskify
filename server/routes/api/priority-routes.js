@@ -1,49 +1,28 @@
 const router = require('express').Router();
-const { Category, Product } = require('../../models');
+const connection = require('../../config/connection');
 
-router.get('/', (req, res) => {
-  // find all categories
-  // be sure to include its associated Products
-  Category.findAll({
-    include: [
-      {
-        model: Product
-        // attributes: ['product_name', 'price', 'stock']
-      }
-    ]
-  })
-    .then(dbPostData => res.json(dbPostData))
-    .catch(err => {
-      console.log(err);
-      res.status(500).json(err);
-    });
+router.get('/', async (req, res) => {
+  // find all priorities
+  try {
+    const [rows] = await connection.query(`SELECT * FROM priority`);
+
+    res.status(200).json(rows);
+  } catch (error) {
+    console.error("Error executing queries:", error);
+    res.status(500).send("An error occurred while executing the database queries.");
+  }
 });
 
-router.get('/:id', (req, res) => {
-  // find one category by its `id` value
-  // be sure to include its associated Products
-  Category.findOne({
-    where: {
-      id: req.params.id
-    },
-    include: [
-      {
-        model: Product
-        // attributes: ['product_name', 'price', 'stock']
-      }
-    ]
-  })
-    .then(dbPostData => {
-      if (!dbPostData) {
-        res.status(404).json({ message: 'No post found with this id' });
-        return;
-      }
-      res.json(dbPostData);
-    })
-    .catch(err => {
-      console.log(err);
-      res.status(500).json(err);
-    });
+router.get('/:id', async (req, res) => {
+  // find one priority by its `id` value
+  try {
+    const [rows] = await connection.query(`SELECT * FROM priority WHERE priority.id = ${req.params.id};`);
+
+    res.status(200).json(rows);
+  } catch (error) {
+    console.error("Error executing queries:", error);
+    res.status(500).send("An error occurred while executing the database queries.");
+  }
 });
 
 module.exports = router;

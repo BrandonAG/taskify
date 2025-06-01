@@ -47,16 +47,6 @@ function Project() {
       <h1>Project Page</h1>
       {!popupOn ? <Button onClick={togglePopup}>Add Task</Button> : <></>}
       {popupOn ? <CreateTask toggle={togglePopup} projectID={id} /> : null}
-      <Container>
-        {data !== null ? data.map((item, index) => (
-          <Row>
-            <Col>
-            <div key={index}>{item.task_name}</div>
-            {/* <Link to={{pathname: './project/' + item.project_id}} key={index}>{item.project_name}</Link> */}
-            </Col>
-          </Row>
-        )) : <></>}
-      </Container>
       <Table striped bordered hover>
       <thead>
         <tr>

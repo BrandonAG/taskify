@@ -1,70 +1,47 @@
 const router = require('express').Router();
-const { User } = require('../../models');
+const connection = require('../../config/connection');
 
-// The `/api/categories` endpoint
-
-router.get('/', (req, res) => {
-
-    if(req.session.user) {
-        console.log(req.session.user);
-        // find all categories
-        // be sure to include its associated Products
-        User.findAll()
-        .then(dbPostData => res.json(dbPostData))
-        .catch(err => {
-            console.log(err);
-            res.status(500).json(err);
-        });
-    } else {
-        console.log('No user');
-        res.send(null);
-    }
-});
-
-router.post('/', (req, res) => {
+router.post('/', async (req, res) => {
+  // create new user
   req.session.user = req.body.username;
   console.log(req.body.username);
   if(req.session.user) {
-      console.log(req.session.user);
-      // find all categories
-      // be sure to include its associated Products
-      User.create({ user_name: req.body.username, user_password: req.body.password })
-      .then(dbPostData => res.json(dbPostData))
-      .catch(err => {
-          console.log(err);
-          res.status(500).json(err);
-      });
+      try {
+        const [rows] = await connection.query(
+          `INSERT INTO user (user_name, user_password)
+          VALUES (
+            ${req.body.username}, ${req.body.password}
+          );`);
+
+        res.status(200).json(rows);
+      } catch (error) {
+        console.error("Error executing queries:", error);
+        res.status(500).send("An error occurred while executing the database queries.");
+      }
   } else {
       console.log('No user');
       res.send(null);
   }
 });
 
-router.get('/:id', (req, res) => {
-  // find one category by its `id` value
-  // be sure to include its associated Products
-  Category.findOne({
-    where: {
-      id: req.params.id
-    },
-    include: [
-      {
-        model: Product
-        // attributes: ['product_name', 'price', 'stock']
+router.get('/:id', async (req, res) => {
+  // find one user by its `id` value
+  req.session.user = req.body.username;
+  console.log(req.body.username);
+  if(req.session.user) {
+      try {
+        const [rows] = await connection.query(
+          `SELECT * FROM user WHERE user.id = ${req.params.id};`);
+
+        res.status(200).json(rows);
+      } catch (error) {
+        console.error("Error executing queries:", error);
+        res.status(500).send("An error occurred while executing the database queries.");
       }
-    ]
-  })
-    .then(dbPostData => {
-      if (!dbPostData) {
-        res.status(404).json({ message: 'No post found with this id' });
-        return;
-      }
-      res.json(dbPostData);
-    })
-    .catch(err => {
-      console.log(err);
-      res.status(500).json(err);
-    });
+  } else {
+      console.log('No user');
+      res.send(null);
+  }
 });
 
 module.exports = router;

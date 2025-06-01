@@ -2,12 +2,12 @@ import React, { useState } from "react";
 import { Form, Button, Alert } from 'react-bootstrap';
 
 function CreateTask(props) {
-    const [userFormData, setUserFormData] = useState({ taskName: '', taskDescription: '', priorityID: 1, status: 1 });
+    const [userFormData, setUserFormData] = useState({ taskName: '', taskDescription: '', priorityID: 1, statusID: 1 });
 
     const handleInputChange = (event) => {
         const { name, value } = event.target;
         setUserFormData({ ...userFormData, [name]: value });
-      };
+    };
 
     function cancelSubmit(e) {
         e.preventDefault()
@@ -37,7 +37,7 @@ function CreateTask(props) {
                     task_description: userFormData.taskDescription,
                     project_id: props.projectID,
                     priority_id: userFormData.priorityID,
-                    status_id: userFormData.status
+                    status_id: userFormData.statusID
                 }),
             })
             .then((response) => {
@@ -88,7 +88,7 @@ function CreateTask(props) {
                 </Form.Group>
                 <Form.Group>
                     <Form.Label htmlFor='taskPriority'>Priority Level</Form.Label>
-                    <Form.Select value={userFormData.priorityID} onChange={handleInputChange} aria-label="Default select example">
+                    <Form.Select name="priorityID" value={userFormData.priorityID} onChange={handleInputChange} aria-label="Default select example">
                         <option value="1">Low</option>
                         <option value="2">Medium</option>
                         <option value="3">High</option>
@@ -96,7 +96,7 @@ function CreateTask(props) {
                 </Form.Group>
                 <Form.Group>
                     <Form.Label htmlFor='taskStatus'>Status</Form.Label>
-                    <Form.Select value={userFormData.status} onChange={handleInputChange} aria-label="Default select example">
+                    <Form.Select name="statusID" value={userFormData.statusID} onChange={handleInputChange} aria-label="Default select example">
                         <option value="1">Not Started</option>
                         <option value="2">In Progress</option>
                         <option value="3">Completed</option>
