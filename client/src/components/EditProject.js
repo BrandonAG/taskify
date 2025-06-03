@@ -1,8 +1,9 @@
 import { useState } from 'react';
 import { Form, Button, Alert, Modal} from 'react-bootstrap';
+import 'bootstrap-icons/font/bootstrap-icons.css';
 
-function CreateProject() {
-    const [userFormData, setUserFormData] = useState({ projectName: '' });
+function EditProject({ project_id, project_name }) {
+    const [userFormData, setUserFormData] = useState({ projectName: project_name });
     const [show, setShow] = useState(false);
 
     const handleClose = () => setShow(false);
@@ -26,8 +27,8 @@ function CreateProject() {
         setShow(false);
     
         try {
-            fetch('http://localhost:3001/api/projects', {
-                method: 'POST',
+            fetch('http://localhost:3001/api/projects/' + project_id, {
+                method: 'PUT',
                 credentials: 'include',
                 headers: {
                     'Content-Type': 'application/json'
@@ -55,13 +56,13 @@ function CreateProject() {
 
     return (
         <>
-            <Button variant="primary" onClick={handleShow}>
-                Add Project
+            <Button variant="outline-primary me-2" onClick={handleShow}>
+                <i className="bi bi-pencil-fill"></i>
             </Button>
 
             <Modal show={show} onHide={handleClose}>
                 <Modal.Header closeButton>
-                <Modal.Title>Add New Project</Modal.Title>
+                <Modal.Title>Edit Project</Modal.Title>
                 </Modal.Header>
                 <Modal.Body>
                     <Form onSubmit={handleSubmit}>
@@ -69,7 +70,7 @@ function CreateProject() {
                             <Form.Label htmlFor='projectName'>Project Name</Form.Label>
                             <Form.Control
                             type='text'
-                            placeholder='Project Name'
+                            placeholder={project_name}
                             name='projectName'
                             onChange={handleInputChange}
                             value={userFormData.projectName}
@@ -81,15 +82,15 @@ function CreateProject() {
                 </Modal.Body>
                 <Modal.Footer>
                 <Button variant="primary" onClick={handleSubmit}>
-                    Submit
+                    Update
                 </Button>
                 <Button variant="secondary" onClick={handleClose}>
                     Close
                 </Button>
                 </Modal.Footer>
-            </Modal>
+            </Modal>            
         </>
     )
 }
 
-export default CreateProject;
+export default EditProject;

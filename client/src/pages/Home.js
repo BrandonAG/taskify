@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import LoginForm from '../components/LoginForm';
 import UserProjects from '../components/UserProjects';
+import Navigation from '../components/Nav';
 
 const Home = () => {
   const [data, setData] = useState(null);
@@ -37,7 +38,7 @@ const Home = () => {
   return (
     <section className="text-center container">
       { console.log("HOME DATA " + data) }
-      {data !== null ? <UserProjects /> : <LoginForm />}
+      {data !== null ? <><Navigation /><UserProjects /></> : <LoginForm />}
     </section>
   );
 };

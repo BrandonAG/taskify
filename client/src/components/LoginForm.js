@@ -1,10 +1,8 @@
 // see SignupForm.js for comments
 import React, { useState } from 'react';
-import { Form, Button, Alert } from 'react-bootstrap';
 
 const LoginForm = () => {
   const [userFormData, setUserFormData] = useState({ username: '', password: '' });
-  const [validated] = useState(false);
   const [showAlert, setShowAlert] = useState(false);
 
   const handleInputChange = (event) => {
@@ -96,47 +94,24 @@ const LoginForm = () => {
 
   return (
     <>
-      <h1>Taskify</h1>
-      <Form noValidate validated={validated} onSubmit={handleFormSubmit}>
-        <Alert dismissible onClose={() => setShowAlert(false)} show={showAlert} variant='danger'>
-          Something went wrong with your login credentials!
-        </Alert>
-        <Form.Group>
-          <Form.Label htmlFor='username'>Username</Form.Label>
-          <Form.Control
-            type='text'
-            placeholder='Your username'
-            name='username'
-            onChange={handleInputChange}
-            value={userFormData.username}
-            required
-          />
-          <Form.Control.Feedback type='invalid'>Username is required!</Form.Control.Feedback>
-        </Form.Group>
-
-        <Form.Group>
-          <Form.Label htmlFor='password'>Password</Form.Label>
-          <Form.Control
-            type='password'
-            placeholder='Your password'
-            name='password'
-            onChange={handleInputChange}
-            value={userFormData.password}
-            required
-          />
-          <Form.Control.Feedback type='invalid'>Password is required!</Form.Control.Feedback>
-        </Form.Group>
-        <Button
-          disabled={!(userFormData.username && userFormData.password)}
-          type='submit'
-          variant='success'>
-          Submit
-        </Button>
-        <Button
-          onClick={createAccount}>
-          Create Account
-        </Button>
-      </Form>
+      <main className="form-signin w-100 m-auto">
+        <h1>Taskify</h1>
+        <form onSubmit={handleFormSubmit}>
+          <h1 className="h3 mb-3 fw-normal">Please sign in</h1>
+          <div className="form-floating">
+            <input type="text" className="form-control" name="username" placeholder='Your username' onChange={handleInputChange}
+            value={userFormData.username} />
+            <label htmlFor="username">User Name</label>
+          </div>
+          <div className="form-floating">
+            <input type="password" className="form-control" name="password" placeholder='Your password' onChange={handleInputChange}
+            value={userFormData.password} />
+            <label htmlFor="password">Password</label>
+          </div>
+          <button className="btn btn-primary my-3 py-2 me-sm-2" type="submit">Sign in</button>
+          <button className="btn btn-secondary my-3 py-2" type="button" onClick={createAccount}>Create Account</button>
+        </form>
+      </main>
     </>
   );
 };

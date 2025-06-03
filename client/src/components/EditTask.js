@@ -1,8 +1,9 @@
-import React, { useState } from "react";
-import { Form, Button, Alert, Modal } from 'react-bootstrap';
+import { useState } from 'react';
+import { Form, Button, Alert, Modal} from 'react-bootstrap';
+import 'bootstrap-icons/font/bootstrap-icons.css';
 
-function CreateTask({ projectID, userID }) {
-    const [userFormData, setUserFormData] = useState({ taskName: '', taskDescription: '', assignedTo: userID, priorityID: 1, statusID: 1 });
+function EditTask({ projectID, taskID, task_name, task_description, assigned_to, priority, status }) {
+    const [userFormData, setUserFormData] = useState({ taskName: task_name, taskDescription: task_description, assignedTo: assigned_to, priorityID: priority, statusID: status });
     const [show, setShow] = useState(false);
     const [data, setData] = useState(null);
     const [loading, setLoading] = useState(true);
@@ -39,7 +40,6 @@ function CreateTask({ projectID, userID }) {
     }
 
     const handleInputChange = (event) => {
-        console.log(event);
         const { name, value } = event.target;
         setUserFormData({ ...userFormData, [name]: value });
     };
@@ -53,11 +53,12 @@ function CreateTask({ projectID, userID }) {
           event.preventDefault();
           event.stopPropagation();
         }
-        console.log(event.target);
+
+        setShow(false);
     
-       try {
-            fetch('http://localhost:3001/api/tasks', {
-                method: 'POST',
+        try {
+            fetch('http://localhost:3001/api/tasks/' + taskID, {
+                method: 'PUT',
                 credentials: 'include',
                 headers: {
                     'Content-Type': 'application/json'
@@ -65,8 +66,7 @@ function CreateTask({ projectID, userID }) {
                 body: JSON.stringify({
                     task_name: userFormData.taskName,
                     task_description: userFormData.taskDescription,
-                    user_id: userFormData.assignedTo,
-                    project_id: projectID,
+                    assigned_to_id: userFormData.assignedTo,
                     priority_id: userFormData.priorityID,
                     status_id: userFormData.statusID
                 }),
@@ -84,22 +84,19 @@ function CreateTask({ projectID, userID }) {
         }
     
         setUserFormData({
-          taskName: '',
-          taskDescription: '',
-          priorityID: 1,
-          statusID: 1
+            projectName: '',
         });
       };
 
     return (
         <>
-            <Button variant="primary" onClick={handleShow}>
-                Add Task
+            <Button variant="outline-primary me-2" onClick={handleShow}>
+                <i className="bi bi-pencil-fill"></i>
             </Button>
 
             <Modal show={show} onHide={handleClose}>
                 <Modal.Header closeButton>
-                <Modal.Title>Add New Task</Modal.Title>
+                <Modal.Title>Edit Task</Modal.Title>
                 </Modal.Header>
                 <Modal.Body>
                     <Form onSubmit={handleSubmit}>
@@ -166,4 +163,4 @@ function CreateTask({ projectID, userID }) {
     )
 }
 
-export default CreateTask;
+export default EditTask;

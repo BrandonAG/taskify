@@ -1,3 +1,4 @@
+const path = require('path');
 require('dotenv').config()
 const express = require('express');
 const session = require('express-session');
@@ -26,9 +27,15 @@ app.use(cors({ credentials: true, origin: "http://localhost:3000" }));
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
-app.use(express.static('../client/public'))
+// app.use(express.static('../client/public'))
+// Serve up static assets
+app.use(express.static(path.join(__dirname, '../client/build')));
 
 app.use(routes);
+
+app.get('*splat', (req, res) => {
+    res.sendFile(path.join(__dirname, '../client/build/index.html'));
+});
 
 // start listening for incoming requests
 app.listen(PORT, () => {

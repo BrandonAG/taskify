@@ -5,16 +5,11 @@ import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import Home from './pages/Home';
 import Project from './pages/Project';
 import Task from './pages/Task';
+import Navigation from './components/Nav';
 
 function App() {
   return (
     <div className="App">
-      {/* <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-      </header> */}
       <Router>
         <Routes>
           <Route exact path='/' element={<Home />}/>
