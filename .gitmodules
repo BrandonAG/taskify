@@ -1,0 +1,3 @@
+[submodule "microservices/microserviceA"]
+	path = microservices/microserviceA
+	url = https://github.com/JazmiaCornell/microserviceA.git
