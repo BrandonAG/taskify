@@ -34,10 +34,8 @@ const LoginForm = () => {
         })
         .then((response) => {
             response.json()
-            console.log('test');
         })
         .then((result) => {
-            console.log(result);
             window.location.reload();
         });
     } catch (err) {
@@ -75,10 +73,8 @@ const LoginForm = () => {
         })
         .then((response) => {
             response.json()
-            console.log('test');
         })
         .then((result) => {
-            console.log(result);
             window.location.reload();
         });
     } catch (err) {
@@ -111,6 +107,7 @@ const LoginForm = () => {
           <button className="btn btn-primary my-3 py-2 me-sm-2" type="submit">Sign in</button>
           <button className="btn btn-secondary my-3 py-2" type="button" onClick={createAccount}>Create Account</button>
         </form>
+        <p>Keep track of all your project tasks. Add new projects, then add and update tasks</p>
       </main>
     </>
   );

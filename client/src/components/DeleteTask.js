@@ -2,7 +2,7 @@ import { useState } from 'react';
 import { Form, Button, Alert, Modal} from 'react-bootstrap';
 import 'bootstrap-icons/font/bootstrap-icons.css';
 
-function DeleteTask({ task_id, task_name }) {
+function DeleteTask({ task_id, task_name, permission_id, projectID }) {
     const [show, setShow] = useState(false);
 
     const handleClose = () => setShow(false);
@@ -27,13 +27,14 @@ function DeleteTask({ task_id, task_name }) {
                 headers: {
                     'Content-Type': 'application/json'
                 },
+                body: JSON.stringify({
+                    project_id: projectID
+                }),
             })
             .then((response) => {
                 response.json()
-                console.log('test');
             })
             .then((result) => {
-                console.log(result);
                 window.location.reload();
             });
         } catch (err) {
@@ -43,7 +44,7 @@ function DeleteTask({ task_id, task_name }) {
 
     return (
         <>
-            <Button variant="outline-danger" onClick={handleShow}>
+            <Button disabled={permission_id < 2} variant="outline-danger" onClick={handleShow}>
                 <i className="bi bi-trash3-fill"></i>
             </Button>
 

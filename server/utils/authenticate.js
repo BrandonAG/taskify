@@ -19,7 +19,6 @@ const authenticate = (reqBody) => {
             res.setEncoding('utf8');
             res.on('data', (chunk) => {
                 data = chunk;
-                console.log(`Credentials Match: ${chunk}`);
             });
             res.on('end', () => {
                 resolve(JSON.parse(data));

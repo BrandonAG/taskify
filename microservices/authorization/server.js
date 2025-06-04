@@ -1,7 +1,7 @@
 require('dotenv').config()
 const express = require('express');
 const cors = require('cors');
-const cookie = require("cookie");
+const connection = require('./config/connection');
 
 // Server Setup
 const app = express();
@@ -12,35 +12,64 @@ app.use(cors({ credentials: true, origin: "*" }));
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
-let sessions = {}
-
-app.post('/auth', async (req, res) => {
-    // get username and password from request body
-    console.log(req.body);
-    const cookies = cookie.parse(req.body.cookie);
-
-    if (cookies['connect.sid']) {
-        // add user session info
-        sessions[cookies['connect.sid']] = req.body.username;
-        res.json({response: 'true'});
-    } else {
-        res.json({response: 'false'});
+app.get('/proj-access', async (req, res) => {
+    // check if user has access to project
+    try {
+        const [rows] = await connection.query(
+            `SELECT * FROM user_project
+            WHERE
+                project_id = ${req.body.project_id}
+                AND user_id = (SELECT user.id FROM user WHERE user_name = '${req.body.user_name}');`
+        );
+        if (rows[0]) {
+            res.status(200).json({authorized: true});
+            if (process.env.DEV_MODE) {
+                console.log({authorized: true});
+            }
+        } else {
+            res.status(200).json({authorized: false});
+            if (process.env.DEV_MODE) {
+                console.log({authorized: false});
+            }
+        }
+    } catch (error) {
+        console.error("Error executing queries:", error);
+        res.status(500).send("An error occurred while executing the database queries.");
+        if (process.env.DEV_MODE) {
+            console.log("An error occurred while executing the database queries.");
+        }
     }
 
 });
 
-app.get('/auth', async (req, res) => {
-    // get username and password from request body
-    const cookies = cookie.parse(req.body.cookie);
-
-    if (cookies['connect.sid']) {
-        // check database for user
-        console.log(sessions[cookies['connect.sid']]);
-        res.json({response: sessions[cookies['connect.sid']]});
-    } else {
-        res.json({response: 'false'});
+app.get('/proj-level', async (req, res) => {
+    // check if user meets a privilege level
+    try {
+        const [rows] = await connection.query(
+            `SELECT * FROM user_project
+            WHERE
+                project_id = ${req.body.project_id}
+                AND user_id = (SELECT user.id FROM user WHERE user_name = '${req.body.user_name}')
+                AND permission_id >= ${req.body.permission_id};`
+        );
+        if (rows[0] && rows[0].permission_id >= req.body.permission_id) {
+            res.status(200).json({authorized: true});
+            if (process.env.DEV_MODE) {
+                console.log({authorized: true});
+            }
+        } else {
+            res.status(200).json({authorized: false});
+            if (process.env.DEV_MODE) {
+                console.log({authorized: false});
+            }
+        }
+    } catch (error) {
+        console.error("Error executing queries:", error);
+        res.status(500).send("An error occurred while executing the database queries.");
+        if (process.env.DEV_MODE) {
+            console.log("An error occurred while executing the database queries.");
+        }
     }
-
 });
 
 // start listening for incoming requests

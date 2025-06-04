@@ -22,8 +22,7 @@ function Navigation() {
             response.json()
         })
         .then((result) => {
-            console.log(result);
-            window.location.reload();
+            window.location.href = "/";
         });
     } catch (err) {
       console.error(err);

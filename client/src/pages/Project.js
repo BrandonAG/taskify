@@ -11,6 +11,7 @@ import DeleteTask from "../components/DeleteTask";
 function Project() {
   const location = useLocation();
 
+  const [isChecked, setIsChecked] = useState(false);
   const [data, setData] = useState(null);
   const [user, setUser] = useState(null);
   const [loading, setLoading] = useState(true);
@@ -36,9 +37,7 @@ function Project() {
       } finally {
         setLoading(false);
       }
-    };
 
-    const fetchUser = async () => {
       try {
         const response = await fetch('http://localhost:3001/api/users', {
           method: 'GET',
@@ -51,7 +50,6 @@ function Project() {
           throw new Error(`HTTP error! status: ${response.status}`);
         }
         const json = await response.json();
-        console.log(json.user_id);
         setUser(json);
       } catch (e) {
         setError(e);
@@ -61,8 +59,11 @@ function Project() {
     };
 
     fetchData();
-    fetchUser();
   }, [location]);
+
+  const handleCheckboxChange = (event) => {
+    setIsChecked(event.target.checked);
+  };
 
   return (
     <>
@@ -72,10 +73,21 @@ function Project() {
         <div className="d-flex flex-wrap align-items-center justify-content-center justify-content-md-between py-3 mb-4 border-bottom">
           <div className="col-md-3 mb-2 mb-md-0 ms-2 text-start">
             {user !== null ?
-              <CreateTask projectID={location.state.project_id} userID={user[0].id} /> : <></>}
+              <CreateTask projectID={location.state.project_id} userID={user[0].id} permission_id={location.state.permission_id} /> : <></>}
+          </div>
+          <div className="col-md-3 text-middle me-2">
+              <input
+                class="form-check-input me-2"
+                type="checkbox"
+                checked={isChecked}
+                onChange={handleCheckboxChange}
+              />
+              <label class="form-check-label">
+                Hide Completed
+              </label>
           </div>
           <div className="col-md-3 text-end me-2">
-            <Members project_id={location.state.project_id} />
+            <Members project_id={location.state.project_id} permission_id={location.state.permission_id} />
             <TaskInfo />
           </div>
         </div>
@@ -92,7 +104,7 @@ function Project() {
         </thead>
         <tbody>
           {user !== null ? data.map((item, index) => (
-            <tr class="align-middle">
+            <tr hidden={ isChecked && item.status_id === 3 } class="align-middle">
               <td>{item.task_name}</td>
               <td>{item.task_description}</td>
               <td>{item.assigned_to}</td>
@@ -107,8 +119,14 @@ function Project() {
                   assigned_to={item.assigned_to_id}
                   priority={item.priority_id}
                   status={item.status_id}
+                  permission_id={location.state.permission_id}
                 />
-                <DeleteTask task_id={item.id} task_name={item.task_name}/>
+                <DeleteTask
+                  task_id={item.id}
+                  task_name={item.task_name}
+                  projectID={location.state.project_id}
+                  permission_id={location.state.permission_id}
+                />
               </td>
             </tr>
           )) : <></>}

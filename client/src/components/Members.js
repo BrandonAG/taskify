@@ -3,7 +3,7 @@ import { Form, Button, Alert, Modal, Table } from 'react-bootstrap';
 import MemberRow from './MemberRow';
 import 'bootstrap-icons/font/bootstrap-icons.css';
 
-function Members({ project_id }) {
+function Members({ project_id, permission_id }) {
     const [data, setData] = useState(null);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
@@ -85,6 +85,7 @@ function Members({ project_id }) {
     
         setUserFormData({
             username: '',
+            permission: 1
         });
       };
 
@@ -101,17 +102,17 @@ function Members({ project_id }) {
                 <Modal.Body>
                     <div class="row mb-3">
                         <div class="col-auto">
-                            <input type="text" name="username" value={userFormData.username} onChange={handleInputChange} class="form-control" placeholder="User name" />
+                            <input disabled={permission_id < 3} type="text" name="username" value={userFormData.username} onChange={handleInputChange} class="form-control" placeholder="User name" />
                         </div>
                         <div class="col-auto">
-                            <select class="form-select" name="permission" value={userFormData.permission} onChange={handleInputChange}>
+                            <select disabled={permission_id < 3} class="form-select" name="permission" value={userFormData.permission} onChange={handleInputChange}>
                                 <option key="1" value="1">read-only</option>
                                 <option key="2" value="2">read-write</option>
                                 <option key="3" value="3">admin</option>
                             </select>
                         </div>
                         <div class="col-auto">
-                            <button class="btn btn-primary" onClick={handleSubmit}><i class="bi bi-person-plus-fill"></i></button>
+                            <button disabled={permission_id < 3} class="btn btn-primary" onClick={handleSubmit}><i class="bi bi-person-plus-fill"></i></button>
                         </div>
                     </div>
                     <Table striped bordered hover>
@@ -131,6 +132,7 @@ function Members({ project_id }) {
                                 user_name={item.user_name}
                                 permission_id={item.permission_id}
                                 setFormSubmitted={setFormSubmitted}
+                                login_permission={permission_id}
                             />
                             )) : <></>}
                         </tbody>

@@ -2,7 +2,7 @@ import { useState } from 'react';
 import { Form, Button, Alert, Modal} from 'react-bootstrap';
 import 'bootstrap-icons/font/bootstrap-icons.css';
 
-function DeleteProject({ project_id, project_name }) {
+function DeleteProject({ project_id, project_name, permission_id }) {
     const [show, setShow] = useState(false);
 
     const handleClose = () => setShow(false);
@@ -30,10 +30,8 @@ function DeleteProject({ project_id, project_name }) {
             })
             .then((response) => {
                 response.json()
-                console.log('test');
             })
             .then((result) => {
-                console.log(result);
                 window.location.reload();
             });
         } catch (err) {
@@ -43,7 +41,7 @@ function DeleteProject({ project_id, project_name }) {
 
     return (
         <>
-            <Button variant="outline-danger" onClick={handleShow}>
+            <Button disabled={permission_id < 3} variant="outline-danger" onClick={handleShow}>
                 <i className="bi bi-trash3-fill"></i>
             </Button>
 

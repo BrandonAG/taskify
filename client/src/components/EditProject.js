@@ -2,7 +2,7 @@ import { useState } from 'react';
 import { Form, Button, Alert, Modal} from 'react-bootstrap';
 import 'bootstrap-icons/font/bootstrap-icons.css';
 
-function EditProject({ project_id, project_name }) {
+function EditProject({ project_id, project_name, permission_id }) {
     const [userFormData, setUserFormData] = useState({ projectName: project_name });
     const [show, setShow] = useState(false);
 
@@ -39,10 +39,8 @@ function EditProject({ project_id, project_name }) {
             })
             .then((response) => {
                 response.json()
-                console.log('test');
             })
             .then((result) => {
-                console.log(result);
                 window.location.reload();
             });
         } catch (err) {
@@ -56,7 +54,7 @@ function EditProject({ project_id, project_name }) {
 
     return (
         <>
-            <Button variant="outline-primary me-2" onClick={handleShow}>
+            <Button disabled={permission_id < 3} variant="outline-primary me-2" onClick={handleShow}>
                 <i className="bi bi-pencil-fill"></i>
             </Button>
 

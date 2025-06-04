@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { Form, Button, Alert, Modal } from 'react-bootstrap';
 
-function CreateTask({ projectID, userID }) {
+function CreateTask({ projectID, userID, permission_id }) {
     const [userFormData, setUserFormData] = useState({ taskName: '', taskDescription: '', assignedTo: userID, priorityID: 1, statusID: 1 });
     const [show, setShow] = useState(false);
     const [data, setData] = useState(null);
@@ -24,8 +24,6 @@ function CreateTask({ projectID, userID }) {
                 }
                 const json = await response.json();
                 setData(json);
-                console.log("DATA");
-                console.log(data);
             } catch (e) {
                 setError(e);
             } finally {
@@ -39,7 +37,6 @@ function CreateTask({ projectID, userID }) {
     }
 
     const handleInputChange = (event) => {
-        console.log(event);
         const { name, value } = event.target;
         setUserFormData({ ...userFormData, [name]: value });
     };
@@ -53,7 +50,6 @@ function CreateTask({ projectID, userID }) {
           event.preventDefault();
           event.stopPropagation();
         }
-        console.log(event.target);
     
        try {
             fetch('http://localhost:3001/api/tasks', {
@@ -73,10 +69,8 @@ function CreateTask({ projectID, userID }) {
             })
             .then((response) => {
                 response.json()
-                console.log('test');
             })
             .then((result) => {
-                console.log(result);
                 window.location.reload();
             });
         } catch (err) {
@@ -93,7 +87,7 @@ function CreateTask({ projectID, userID }) {
 
     return (
         <>
-            <Button variant="primary" onClick={handleShow}>
+            <Button disabled={permission_id < 2} variant="primary" onClick={handleShow}>
                 Add Task
             </Button>
 

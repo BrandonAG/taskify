@@ -19,9 +19,15 @@ app.get("/", async (req, res) => {
     try {
         const [rows] = await connection.query(req.body.query);
         res.status(200).json(rows);
+        if (process.env.DEV_MODE) {
+            console.log(rows);
+        }
     } catch (error) {
         console.error("Error executing queries:", error);
         res.status(500).send("An error occurred while executing the database queries.");
+        if (process.env.DEV_MODE) {
+            console.log("An error occurred while executing the database queries.");
+        }
     }
 });
 
@@ -29,9 +35,15 @@ app.post("/", async (req, res) => {
     try {
         const [rows] = await connection.query(req.body.query);
         res.status(200).json(rows);
+        if (process.env.DEV_MODE) {
+            console.log(rows);
+        }
     } catch (error) {
         console.error("Error executing queries:", error);
         res.status(500).send("An error occurred while executing the database queries.");
+        if (process.env.DEV_MODE) {
+            console.log("An error occurred while executing the database queries.");
+        }
     }
 });
 
@@ -39,9 +51,15 @@ app.put("/", async (req, res) => {
     try {
         const [rows] = await connection.query(req.body.query);
         res.status(200).json(rows);
+        if (process.env.DEV_MODE) {
+            console.log(rows);
+        }
     } catch (error) {
         console.error("Error executing queries:", error);
         res.status(500).send("An error occurred while executing the database queries.");
+        if (process.env.DEV_MODE) {
+            console.log("An error occurred while executing the database queries.");
+        }
     }
 });
 
@@ -49,9 +67,15 @@ app.delete("/", async (req, res) => {
     try {
         const [rows] = await connection.query(req.body.query);
         res.status(200).json(rows);
+        if (process.env.DEV_MODE) {
+            console.log(rows);
+        }
     } catch (error) {
         console.error("Error executing queries:", error);
         res.status(500).send("An error occurred while executing the database queries.");
+        if (process.env.DEV_MODE) {
+            console.log("An error occurred while executing the database queries.");
+        }
     }
 });
 

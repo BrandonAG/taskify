@@ -38,10 +38,8 @@ function CreateProject() {
             })
             .then((response) => {
                 response.json()
-                console.log('test');
             })
             .then((result) => {
-                console.log(result);
                 window.location.reload();
             });
         } catch (err) {

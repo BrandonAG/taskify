@@ -23,8 +23,6 @@ const Home = () => {
         }
         const json = await response.json();
         setData(json);
-        console.log("DATA");
-        console.log(data);
       } catch (e) {
         setError(e);
       } finally {
@@ -37,7 +35,6 @@ const Home = () => {
 
   return (
     <section className="text-center container">
-      { console.log("HOME DATA " + data) }
       {data !== null ? <><Navigation /><UserProjects /></> : <LoginForm />}
     </section>
   );

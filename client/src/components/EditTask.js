@@ -2,7 +2,7 @@ import { useState } from 'react';
 import { Form, Button, Alert, Modal} from 'react-bootstrap';
 import 'bootstrap-icons/font/bootstrap-icons.css';
 
-function EditTask({ projectID, taskID, task_name, task_description, assigned_to, priority, status }) {
+function EditTask({ projectID, taskID, task_name, task_description, assigned_to, priority, status, permission_id }) {
     const [userFormData, setUserFormData] = useState({ taskName: task_name, taskDescription: task_description, assignedTo: assigned_to, priorityID: priority, statusID: status });
     const [show, setShow] = useState(false);
     const [data, setData] = useState(null);
@@ -25,8 +25,6 @@ function EditTask({ projectID, taskID, task_name, task_description, assigned_to,
                 }
                 const json = await response.json();
                 setData(json);
-                console.log("DATA");
-                console.log(data);
             } catch (e) {
                 setError(e);
             } finally {
@@ -68,15 +66,14 @@ function EditTask({ projectID, taskID, task_name, task_description, assigned_to,
                     task_description: userFormData.taskDescription,
                     assigned_to_id: userFormData.assignedTo,
                     priority_id: userFormData.priorityID,
-                    status_id: userFormData.statusID
+                    status_id: userFormData.statusID,
+                    project_id: projectID
                 }),
             })
             .then((response) => {
                 response.json()
-                console.log('test');
             })
             .then((result) => {
-                console.log(result);
                 window.location.reload();
             });
         } catch (err) {
@@ -90,7 +87,7 @@ function EditTask({ projectID, taskID, task_name, task_description, assigned_to,
 
     return (
         <>
-            <Button variant="outline-primary me-2" onClick={handleShow}>
+            <Button disabled={permission_id < 2} variant="outline-primary me-2" onClick={handleShow}>
                 <i className="bi bi-pencil-fill"></i>
             </Button>
 

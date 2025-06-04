@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import { Button, Form } from 'react-bootstrap';
 import 'bootstrap-icons/font/bootstrap-icons.css';
 
-const MemberRow = ({ project_id, user_id, user_name, permission_id, setFormSubmitted }) => {
+const MemberRow = ({ project_id, user_id, user_name, permission_id, setFormSubmitted, login_permission }) => {
   const [permission, setPermission] = useState(permission_id);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
@@ -71,10 +71,8 @@ const MemberRow = ({ project_id, user_id, user_name, permission_id, setFormSubmi
             })
             .then((response) => {
                 response.json()
-                console.log('test');
             })
             .then((result) => {
-                console.log(result);
                 // window.location.reload();
             });
         } catch (err) {
@@ -90,7 +88,7 @@ const MemberRow = ({ project_id, user_id, user_name, permission_id, setFormSubmi
             <td className="align-middle">{user_name}</td>
             <td>
                 <Form>
-                    <Form.Select name="permission" value={permission} onChange={handlePermissionChange} aria-label="Default select example">
+                    <Form.Select disabled={login_permission < 3} name="permission" value={permission} onChange={handlePermissionChange} aria-label="Default select example">
                         <option key="1" value="1">read-only</option>
                         <option key="2" value="2">read-write</option>
                         <option key="3" value="3">admin</option>
@@ -98,10 +96,10 @@ const MemberRow = ({ project_id, user_id, user_name, permission_id, setFormSubmi
                 </Form>
             </td>
             <td className="text-center">
-                <Button variant={permission != permission_id ? "primary me-2" : "outline-secondary me-2"} onClick={handleUpdate}>
+                <Button disabled={login_permission < 3} variant={permission != permission_id ? "primary me-2" : "outline-secondary me-2"} onClick={handleUpdate}>
                     <i class="bi bi-floppy-fill"></i>
                 </Button>
-                <Button variant="outline-danger" onClick={handleDelete}>
+                <Button disabled={login_permission < 3} variant="outline-danger" onMouseDown={setFormSubmitted(false)} onClick={handleDelete}>
                     <i className="bi bi-trash3-fill"></i>
                 </Button>
             </td>

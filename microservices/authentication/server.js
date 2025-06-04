@@ -38,14 +38,23 @@ app.post('/login', async (req, res) => {
             if (row[0] !== null) {
                 const result = await bcrypt.compare(password, row[0][process.env.PW_FIELD_NAME]);
                 res.json({response: result});
+                if (process.env.DEV_MODE) {
+                    console.log({response: result});
+                }
             } else {
                 res.json({response: 'false'});
+                if (process.env.DEV_MODE) {
+                    console.log({response: 'false'});
+                }
             }
         } catch (error) {
             console.error("Error executing queries:", error);
         }
     } else {
         res.json({response: 'false'});
+        if (process.env.DEV_MODE) {
+            console.log({response: 'false'});
+        }
     }
 
 });

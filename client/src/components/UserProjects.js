@@ -27,8 +27,6 @@ const UserProjects = () => {
         }
         const json = await response.json();
         setData(json);
-        console.log("DATA");
-        console.log(data);
       } catch (e) {
         setError(e);
       } finally {
@@ -61,10 +59,10 @@ const UserProjects = () => {
           <tbody>
             {data !== null ? data.map((item, index) => (
               <tr>
-                <td className="align-middle"><Link to={{pathname: './project/' + item.project_id}} state={{ project_id: item.project_id }} key={index}>{item.project_name}</Link></td>
+                <td className="align-middle"><Link to={{pathname: './project/' + item.project_id}} state={{ project_id: item.project_id, permission_id: item.permission_id }} key={index}>{item.project_name}</Link></td>
                 <td>
-                    <EditProject project_id={item.project_id} project_name={item.project_name} />
-                    <DeleteProject project_id={item.project_id} project_name={item.project_name} />
+                    <EditProject project_id={item.project_id} project_name={item.project_name} permission_id={item.permission_id} />
+                    <DeleteProject project_id={item.project_id} project_name={item.project_name} permission_id={item.permission_id} />
                 </td>
               </tr>
               
