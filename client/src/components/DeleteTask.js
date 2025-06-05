@@ -2,11 +2,14 @@ import { useState } from 'react';
 import { Form, Button, Alert, Modal} from 'react-bootstrap';
 import 'bootstrap-icons/font/bootstrap-icons.css';
 
-function DeleteTask({ task_id, task_name, permission_id, projectID }) {
+function DeleteTask({ task_id, task_name, permission_id, projectID, setFormSubmitted }) {
     const [show, setShow] = useState(false);
 
     const handleClose = () => setShow(false);
-    const handleShow = () => setShow(true);
+    const handleShow = () => {
+        setFormSubmitted(false);
+        setShow(true);
+    }
 
     const handleSubmit = async (event) => {
         event.preventDefault();
@@ -35,7 +38,8 @@ function DeleteTask({ task_id, task_name, permission_id, projectID }) {
                 response.json()
             })
             .then((result) => {
-                window.location.reload();
+                // window.location.reload();
+                setFormSubmitted(true);
             });
         } catch (err) {
           console.error(err);

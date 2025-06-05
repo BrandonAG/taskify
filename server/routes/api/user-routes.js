@@ -7,15 +7,23 @@ router.post('/', async (req, res) => {
   // create new user
 
   // hash password
-  const result = await passwordHash(JSON.stringify({ plaintext_password: req.body.password}));
-
+  const val = await passwordHash(JSON.stringify({ plaintext_password: req.body.password}));
   if(req.body.username) {
       const query = `INSERT INTO user (user_name, user_password)
           VALUES (
-            '${req.body.username}', '${result.hashed_password}'
+            '${req.body.username}', '${val.hashed_password}'
           );`;
 
       const result = await dbQuery('POST', { query });
+      if (result === 'An error occurred while executing the database queries.') {
+
+      } else {
+        req.session.user = req.body.username;
+
+        req.session.save(function (err) {
+            if (err) return next(err);
+        });
+      }
       res.status(200).json(result);
   } else {
       res.send(null);

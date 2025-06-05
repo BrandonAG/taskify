@@ -2,10 +2,15 @@ import React, { useState, useEffect } from "react";
 import { Button, Form } from 'react-bootstrap';
 import 'bootstrap-icons/font/bootstrap-icons.css';
 
-const MemberRow = ({ project_id, user_id, user_name, permission_id, setFormSubmitted, login_permission }) => {
+const MemberRow = ({ project_id, user_id, user_name, permission_id, setFormSubmitted, formSubmitted, login_permission }) => {
   const [permission, setPermission] = useState(permission_id);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+
+  useEffect(() => {
+        setFormSubmitted(false);
+        setPermission(permission_id);
+  }, [formSubmitted]);
 
   const handlePermissionChange = (event) => {
         const { name, value } = event.target;
@@ -99,7 +104,7 @@ const MemberRow = ({ project_id, user_id, user_name, permission_id, setFormSubmi
                 <Button disabled={login_permission < 3} variant={permission != permission_id ? "primary me-2" : "outline-secondary me-2"} onClick={handleUpdate}>
                     <i class="bi bi-floppy-fill"></i>
                 </Button>
-                <Button disabled={login_permission < 3} variant="outline-danger" onMouseDown={setFormSubmitted(false)} onClick={handleDelete}>
+                <Button disabled={login_permission < 3} variant="outline-danger" onClick={handleDelete}>
                     <i className="bi bi-trash3-fill"></i>
                 </Button>
             </td>

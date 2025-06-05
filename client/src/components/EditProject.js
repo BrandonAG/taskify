@@ -2,12 +2,15 @@ import { useState } from 'react';
 import { Form, Button, Alert, Modal} from 'react-bootstrap';
 import 'bootstrap-icons/font/bootstrap-icons.css';
 
-function EditProject({ project_id, project_name, permission_id }) {
+function EditProject({ project_id, project_name, permission_id, setFormSubmitted }) {
     const [userFormData, setUserFormData] = useState({ projectName: project_name });
     const [show, setShow] = useState(false);
 
     const handleClose = () => setShow(false);
-    const handleShow = () => setShow(true);
+    const handleShow = () => {
+        setShow(true);
+        setFormSubmitted(false);
+    }
 
     const handleInputChange = (event) => {
         const { name, value } = event.target;
@@ -41,7 +44,8 @@ function EditProject({ project_id, project_name, permission_id }) {
                 response.json()
             })
             .then((result) => {
-                window.location.reload();
+                // window.location.reload();
+                setFormSubmitted(true);
             });
         } catch (err) {
           console.error(err);

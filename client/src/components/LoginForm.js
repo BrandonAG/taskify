@@ -1,7 +1,7 @@
 // see SignupForm.js for comments
 import React, { useState } from 'react';
 
-const LoginForm = () => {
+const LoginForm = ({ setIsLoggedIn }) => {
   const [userFormData, setUserFormData] = useState({ username: '', password: '' });
   const [showAlert, setShowAlert] = useState(false);
 
@@ -32,11 +32,12 @@ const LoginForm = () => {
                 password: userFormData.password
             }),
         })
-        .then((response) => {
-            response.json()
-        })
+        .then(response => response.json())
         .then((result) => {
-            window.location.reload();
+            if(result && result.message === "Success") {
+              setIsLoggedIn(true);
+            }
+            // window.location.reload();
         });
     } catch (err) {
       console.error(err);
@@ -71,11 +72,12 @@ const LoginForm = () => {
                 password: userFormData.password
             }),
         })
-        .then((response) => {
-            response.json()
-        })
+        .then(response => response.json())
         .then((result) => {
-            window.location.reload();
+            if(result.insertId) {
+              setIsLoggedIn(true);
+            }
+            // window.location.reload();
         });
     } catch (err) {
       console.error(err);

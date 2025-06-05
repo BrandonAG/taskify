@@ -132,6 +132,7 @@ function Members({ project_id, permission_id }) {
                                 user_name={item.user_name}
                                 permission_id={item.permission_id}
                                 setFormSubmitted={setFormSubmitted}
+                                formSubmitted={formSubmitted}
                                 login_permission={permission_id}
                             />
                             )) : <></>}

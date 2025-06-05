@@ -7,6 +7,7 @@ const Home = () => {
   const [data, setData] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -31,11 +32,11 @@ const Home = () => {
     };
 
     fetchData();
-  }, []);
+  }, [isLoggedIn]);
 
   return (
     <section className="text-center container">
-      {data !== null ? <><Navigation /><UserProjects /></> : <LoginForm />}
+      {data !== null ? <><Navigation /><UserProjects /></> : <LoginForm setIsLoggedIn={setIsLoggedIn} />}
     </section>
   );
 };

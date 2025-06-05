@@ -1,12 +1,15 @@
 import { useState } from 'react';
 import { Form, Button, Alert, Modal} from 'react-bootstrap';
 
-function CreateProject() {
+function CreateProject({ setFormSubmitted }) {
     const [userFormData, setUserFormData] = useState({ projectName: '' });
     const [show, setShow] = useState(false);
 
     const handleClose = () => setShow(false);
-    const handleShow = () => setShow(true);
+    const handleShow = () => {
+        setShow(true);
+        setFormSubmitted(false);
+    }
 
     const handleInputChange = (event) => {
         const { name, value } = event.target;
@@ -36,16 +39,16 @@ function CreateProject() {
                     project_name: userFormData.projectName,
                 }),
             })
-            .then((response) => {
-                response.json()
-            })
+            .then(response => response.json())
             .then((result) => {
-                window.location.reload();
+                // window.location.reload();
             });
         } catch (err) {
           console.error(err);
         }
-    
+        
+        setFormSubmitted(true);
+
         setUserFormData({
             projectName: '',
         });

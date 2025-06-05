@@ -11,11 +11,16 @@ import DeleteTask from "../components/DeleteTask";
 function Project() {
   const location = useLocation();
 
+  if (location.state == null) {
+    window.location.href = "/";
+  }
+
   const [isChecked, setIsChecked] = useState(false);
   const [data, setData] = useState(null);
   const [user, setUser] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const [formSubmitted, setFormSubmitted] = useState(false);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -39,7 +44,7 @@ function Project() {
       }
 
       try {
-        const response = await fetch('http://localhost:3001/api/users', {
+        const response = await fetch('http://localhost:3001/api/project-users/permission/' + location.state.project_id, {
           method: 'GET',
           credentials: 'include',
           headers: {
@@ -50,6 +55,9 @@ function Project() {
           throw new Error(`HTTP error! status: ${response.status}`);
         }
         const json = await response.json();
+        if (json.length === 0) {
+          window.location.href = "/";
+        }
         setUser(json);
       } catch (e) {
         setError(e);
@@ -59,7 +67,11 @@ function Project() {
     };
 
     fetchData();
-  }, [location]);
+    const interval = setInterval(() => fetchData(), 2000);
+    return () => {
+      clearInterval(interval);
+    }
+  }, [location, formSubmitted]);
 
   const handleCheckboxChange = (event) => {
     setIsChecked(event.target.checked);
@@ -69,11 +81,14 @@ function Project() {
     <>
       <Navigation />
       <Container>
-        <h1>Project Page</h1>
+        <h1>Project: {location.state !== null ? location.state.project_name : null}</h1>
         <div className="d-flex flex-wrap align-items-center justify-content-center justify-content-md-between py-3 mb-4 border-bottom">
           <div className="col-md-3 mb-2 mb-md-0 ms-2 text-start">
             {user !== null ?
-              <CreateTask projectID={location.state.project_id} userID={user[0].id} permission_id={location.state.permission_id} /> : <></>}
+              <CreateTask
+                projectID={location.state.project_id}
+                userID={user[0].user_id} permission_id={user[0].permission_id}
+                setFormSubmitted={setFormSubmitted} /> : <></>}
           </div>
           <div className="col-md-3 text-middle me-2">
               <input
@@ -87,7 +102,8 @@ function Project() {
               </label>
           </div>
           <div className="col-md-3 text-end me-2">
-            <Members project_id={location.state.project_id} permission_id={location.state.permission_id} />
+            {user !== null ?
+              <Members project_id={location.state.project_id} permission_id={user[0].permission_id} /> : <></>}
             <TaskInfo />
           </div>
         </div>
@@ -119,13 +135,15 @@ function Project() {
                   assigned_to={item.assigned_to_id}
                   priority={item.priority_id}
                   status={item.status_id}
-                  permission_id={location.state.permission_id}
+                  permission_id={user[0].permission_id}
+                  setFormSubmitted={setFormSubmitted}
                 />
                 <DeleteTask
                   task_id={item.id}
                   task_name={item.task_name}
                   projectID={location.state.project_id}
-                  permission_id={location.state.permission_id}
+                  permission_id={user[0].permission_id}
+                  setFormSubmitted={setFormSubmitted}
                 />
               </td>
             </tr>

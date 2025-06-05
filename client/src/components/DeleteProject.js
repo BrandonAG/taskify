@@ -2,11 +2,14 @@ import { useState } from 'react';
 import { Form, Button, Alert, Modal} from 'react-bootstrap';
 import 'bootstrap-icons/font/bootstrap-icons.css';
 
-function DeleteProject({ project_id, project_name, permission_id }) {
+function DeleteProject({ project_id, project_name, permission_id, setFormSubmitted }) {
     const [show, setShow] = useState(false);
 
     const handleClose = () => setShow(false);
-    const handleShow = () => setShow(true);
+    const handleShow = () => {
+        setFormSubmitted(false);
+        setShow(true);
+    }
 
     const handleSubmit = async (event) => {
         event.preventDefault();
@@ -32,7 +35,8 @@ function DeleteProject({ project_id, project_name, permission_id }) {
                 response.json()
             })
             .then((result) => {
-                window.location.reload();
+                // window.location.reload();
+                setFormSubmitted(true);
             });
         } catch (err) {
           console.error(err);

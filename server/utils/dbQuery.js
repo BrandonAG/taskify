@@ -21,7 +21,11 @@ const dbQuery = (reqType, reqBody) => {
                 data = chunk;
             });
             res.on('end', () => {
-                resolve(JSON.parse(data));
+                if (data === 'An error occurred while executing the database queries.') {
+                    resolve(data);
+                } else {
+                    resolve(JSON.parse(data));
+                }
             })
         });
 

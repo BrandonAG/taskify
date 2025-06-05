@@ -2,8 +2,11 @@ import { useState } from 'react';
 import { Form, Button, Alert, Modal} from 'react-bootstrap';
 import 'bootstrap-icons/font/bootstrap-icons.css';
 
-function EditTask({ projectID, taskID, task_name, task_description, assigned_to, priority, status, permission_id }) {
-    const [userFormData, setUserFormData] = useState({ taskName: task_name, taskDescription: task_description, assignedTo: assigned_to, priorityID: priority, statusID: status });
+function EditTask({ projectID, taskID, task_name, task_description,
+    assigned_to, priority, status, permission_id, setFormSubmitted }) {
+    const [userFormData, setUserFormData] = useState({ taskName: task_name,
+        taskDescription: task_description, assignedTo: assigned_to,
+        priorityID: priority, statusID: status });
     const [show, setShow] = useState(false);
     const [data, setData] = useState(null);
     const [loading, setLoading] = useState(true);
@@ -11,6 +14,7 @@ function EditTask({ projectID, taskID, task_name, task_description, assigned_to,
 
     const handleClose = () => setShow(false);
     const handleShow = () => {
+        setFormSubmitted(false);
         const fetchData = async () => {
             try {
                 const response = await fetch('http://localhost:3001/api/project-users/' + projectID, {
@@ -74,15 +78,13 @@ function EditTask({ projectID, taskID, task_name, task_description, assigned_to,
                 response.json()
             })
             .then((result) => {
-                window.location.reload();
+                // window.location.reload();
+                setFormSubmitted(true);
             });
         } catch (err) {
           console.error(err);
         }
-    
-        setUserFormData({
-            projectName: '',
-        });
+
       };
 
     return (

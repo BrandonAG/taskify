@@ -13,7 +13,6 @@ router.post('/login', async (req, res) => {
 
         req.session.save(function (err) {
             if (err) return next(err);
-            // res.redirect('/');
             res.json({ message: "Success" });
         });
     } else {

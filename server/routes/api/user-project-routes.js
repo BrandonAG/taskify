@@ -27,6 +27,22 @@ router.get('/:id', async (req, res) => {
     }
 });
 
+router.get('/permission/:id', async (req, res) => {
+    // get current user permission level by project `id`
+
+    if(req.session.user) {
+            const query = `SELECT user_project.id as project_id, user.id AS user_id, user.user_name, permission_id FROM user_project
+                INNER JOIN user ON user_project.user_id = user.id
+                WHERE project_id = ${req.params.id}
+                AND user_project.user_id = (SELECT id FROM user WHERE user_name = '${req.session.user}');`;
+
+            const result = await dbQuery('GET', { query });
+            res.status(200).json(result);
+    } else {
+        res.send(null);
+    }
+});
+
 router.post('/', async (req, res) => {
   // add new member to project
   

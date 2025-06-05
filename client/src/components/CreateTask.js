@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { Form, Button, Alert, Modal } from 'react-bootstrap';
 
-function CreateTask({ projectID, userID, permission_id }) {
+function CreateTask({ projectID, userID, permission_id, setFormSubmitted }) {
     const [userFormData, setUserFormData] = useState({ taskName: '', taskDescription: '', assignedTo: userID, priorityID: 1, statusID: 1 });
     const [show, setShow] = useState(false);
     const [data, setData] = useState(null);
@@ -10,6 +10,7 @@ function CreateTask({ projectID, userID, permission_id }) {
 
     const handleClose = () => setShow(false);
     const handleShow = () => {
+        setFormSubmitted(false);
         const fetchData = async () => {
             try {
                 const response = await fetch('http://localhost:3001/api/project-users/' + projectID, {
@@ -71,11 +72,14 @@ function CreateTask({ projectID, userID, permission_id }) {
                 response.json()
             })
             .then((result) => {
-                window.location.reload();
+                // window.location.reload();
+                setFormSubmitted(true);
             });
         } catch (err) {
           console.error(err);
         }
+
+        setShow(false)
     
         setUserFormData({
           taskName: '',

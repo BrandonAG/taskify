@@ -11,6 +11,7 @@ const UserProjects = () => {
   const [data, setData] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const [formSubmitted, setFormSubmitted] = useState(false);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -35,7 +36,11 @@ const UserProjects = () => {
     };
 
     fetchData();
-  }, []);
+    const interval = setInterval(() => fetchData(), 2000);
+    return () => {
+      clearInterval(interval);
+    }
+  }, [formSubmitted]);
 
   return (
     <>
@@ -43,7 +48,7 @@ const UserProjects = () => {
         <h1 className="text-start ms-2">Projects</h1>
         <div className="d-flex flex-wrap align-items-center justify-content-center justify-content-md-between py-3 mb-4 border-bottom">
           <div className="col-md-3 mb-2 mb-md-0 ms-2 text-start">
-            <CreateProject />
+            <CreateProject setFormSubmitted={setFormSubmitted} />
           </div>
           <div className="col-md-3 text-end me-2">
             <HomeInfo />
@@ -59,10 +64,10 @@ const UserProjects = () => {
           <tbody>
             {data !== null ? data.map((item, index) => (
               <tr>
-                <td className="align-middle"><Link to={{pathname: './project/' + item.project_id}} state={{ project_id: item.project_id, permission_id: item.permission_id }} key={index}>{item.project_name}</Link></td>
+                <td className="align-middle"><Link to={{pathname: './project'}} state={{ project_id: item.project_id, project_name: item.project_name }} key={index}>{item.project_name}</Link></td>
                 <td>
-                    <EditProject project_id={item.project_id} project_name={item.project_name} permission_id={item.permission_id} />
-                    <DeleteProject project_id={item.project_id} project_name={item.project_name} permission_id={item.permission_id} />
+                    <EditProject project_id={item.project_id} project_name={item.project_name} permission_id={item.permission_id} setFormSubmitted={setFormSubmitted} />
+                    <DeleteProject project_id={item.project_id} project_name={item.project_name} permission_id={item.permission_id} setFormSubmitted={setFormSubmitted} />
                 </td>
               </tr>
               
